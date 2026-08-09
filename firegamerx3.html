@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireGamerX³ - Galeri Foto Komunitas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --utama: #ff4655;
+            --sekunder: #0f1923;
+            --aksen: #3f454d;
+            --teks: #eaeff1;
+            --abu: #8b929a;
+            --gelap: #0b1219;
+            --kartu: #1a242f;
+            --hover: #ff646f;
+            --glow: 0 0 15px rgba(255, 70, 85, 0.35);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gelap) 0%, var(--sekunder) 100%);
+            color: var(--teks);
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 25, 35, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 1.2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--aksen);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--utama), #ff9f43);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: var(--abu);
+            margin-top: 0.2rem;
+        }
+
+        /* Konten Halaman */
+        .halaman {
+            display: none;
+            padding: 1.5rem 1rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .halaman.aktif {
+            display: block;
+            animation: muncul 0.3s ease;
+        }
+
+        @keyframes muncul {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .judul-halaman {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Zona Unggah */
+        .zona-unggah {
+            border: 2px dashed var(--abu);
+            border-radius: 16px;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            background: rgba(26, 36, 47, 0.6);
+        }
+
+        .zona-unggah:hover, .zona-unggah.aktif {
+            border-color: var(--utama);
+            background: rgba(255, 70, 85, 0.08);
+            box-shadow: var(--glow);
+        }
+
+        .zona-unggah .ikon {
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+        }
+
+        #input-foto { display: none; }
+        .pratinjau {
+            max-width: 100%;
+            max-height: 260px;
+            border-radius: 12px;
+            margin: 1rem auto;
+            display: none;
+            border: 2px solid var(--aksen);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Form Input */
+        .kotak-input { margin-bottom: 1.2rem; }
+        .kotak-input label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: var(--teks);
+        }
+        .kotak-input input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--aksen);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: var(--kartu);
+            color: var(--teks);
+            transition: 0.3s;
+        }
+        .kotak-input input:focus {
+            outline: none;
+            border-color: var(--utama);
+            box-shadow: 0 0 0 3px rgba(255,70,85,0.15);
+        }
+
+        /* Tombol */
+        .tombol {
+            width: 100%;
+            padding: 0.95rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tombol.utama {
+            background: linear-gradient(135deg, var(--utama), #ff5252);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255,70,85,0.25);
+        }
+        .tombol.utama:hover {
+            background: linear-gradient(135deg, var(--hover), var(--utama));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255,70,85,0.35);
+        }
+
+        /* Grid Foto */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .kartu-foto {
+            background: var(--kartu);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--aksen);
+            transition: all 0.3s ease;
+        }
+
+        .kartu-foto:hover {
+            transform: translateY(-5px);
+            border-color: var(--utama);
+            box-shadow: var(--glow);
+        }
+
+        .kartu-foto img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+
+        .tag-foto {
+            padding: 0.8rem;
+            font-size: 0.78rem;
+            color: var(--abu);
+            text-align: center;
+            word-break: break-all;
+        }
+
+        .kosong {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--abu);
+            font-style: italic;
+        }
+
+        /* Pencarian */
+        .kotak-cari {
+            display: flex;
+            gap: 0.7rem;
+            margin-bottom: 1.5rem;
+        }
+        .kotak-cari input {
+            flex: 1;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--aksen);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: var(--kartu);
+            color: var(--teks);
+        }
+        .tombol.cari {
+            width: auto;
+            padding: 0.9rem 1.3rem;
+        }
+
+        /* Navigasi Bawah */
+        .nav-bawah {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 25, 35, 0.95);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.9rem 0.5rem;
+            border-top: 1px solid var(--aksen);
+            z-index: 999;
+        }
+
+        .nav-tombol {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            background: transparent;
+            border: none;
+            color: var(--abu);
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+        }
+
+        .nav-tombol.aktif {
+            color: var(--utama);
+            background: rgba(255,70,85,0.1);
+        }
+
+        .nav-tombol .ikon {
+            font-size: 1.4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>🔥 FireGamerX³</h1>
+        <p>Galeri Komunitas Resmi</p>
+    </header>
+
+    <!-- Halaman Beranda -->
+    <div class="halaman aktif" id="halaman-beranda">
+        <h2 class="judul-halaman">📸 Foto Acak Komunitas</h2>
+        <div class="grid" id="grid-beranda">
+            <div class="kosong">Belum ada foto yang diunggah, jadilah yang pertama!</div>
+        </div>
+    </div>
+
+    <!-- Halaman Unggah -->
+    <div class="halaman" id="halaman-unggah">
+        <h2 class="judul-halaman">⬆️ Unggah Foto Baru</h2>
+        <div class="zona-unggah" id="zona-unggah">
+            <div class="ikon">🖼️</div>
+            <h3>Klik atau seret foto ke sini</h3>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--abu);">Mendukung JPG, PNG, WEBP</p>
+            <input type="file" id="input-foto" accept="image/*">
+        </div>
+        <img id="pratinjau" class="pratinjau" alt="Pratinjau foto">
+        
+        <div class="kotak-input">
+            <label for="tag">🏷️ Tag Kategori (pisahkan dengan koma)</label>
+            <input type="text" id="tag" placeholder="Contoh: minecraft, roblox, meme">
+        </div>
+
+        <button class="tombol utama" id="kirim">Kirim ke Galeri</button>
+    </div>
+
+    <!-- Halaman Cari -->
+    <div class="halaman" id="halaman-cari">
+        <h2 class="judul-halaman">🔍 Cari Foto</h2>
+        <div class="kotak-cari">
+            <input type="text" id="kata-kunci" placeholder="Masukkan tag yang dicari...">
+            <button class="tombol utama cari" id="tombol-cari">Cari</button>
+        </div>
+        <div class="grid" id="grid-hasil">
+            <div class="kosong">Masukkan kata kunci untuk mulai mencari</div>
+        </div>
+    </div>
+
+    <!-- Navigasi Bawah -->
+    <nav class="nav-bawah">
+        <button class="nav-tombol aktif" data-halaman="beranda">
+            <span class="ikon">🏠</span> Beranda
+        </button>
+        <button class="nav-tombol" data-halaman="unggah">
+            <span class="ikon">⬆️</span> Unggah
+        </button>
+        <button class="nav-tombol" data-halaman="cari">
+            <span class="ikon">🔍</span> Cari
+        </button>
+    </nav>
+
+<script>
+// === PENYIMPANAN ===
+const KUNCI_SIMPANAN = 'FIREGAMERX3_GALERI';
+let daftarSemuaFoto = ambilDariSimpan();
+
+// === NAVIGASI ===
+const tombolNav = document.querySelectorAll('.nav-tombol');
+const semuaHalaman = document.querySelectorAll('.halaman');
+
+tombolNav.forEach(tombol => {
+    tombol.addEventListener('click', () => {
+        const halaman = tombol.dataset.halaman;
+        tombolNav.forEach(t => t.classList.remove('aktif'));
+        tombol.classList.add('aktif');
+        semuaHalaman.forEach(h => h.classList.remove('aktif'));
+        document.getElementById(`halaman-${halaman}`).classList.add('aktif');
+        
+        if(halaman === 'beranda') tampilkanAcak();
+    });
+});
+
+// === FUNGSI SIMPAN AMBIL ===
+function ambilDariSimpan() {
+    const data = localStorage.getItem(KUNCI_SIMPANAN);
+    return data ? JSON.parse(data) : [];
+}
+function simpanKePenyimpanan() {
+    localStorage.setItem(KUNCI_SIMPANAN, JSON.stringify(daftarSemuaFoto));
+}
+
+// === BERANDA: FOTO ACAK ===
+function tampilkanAcak() {
+    const wadah = document.getElementById('grid-beranda');
+    if(daftarSemuaFoto.length === 0) {
+        wadah.innerHTML = '<div class="kosong">Belum ada foto yang diunggah, jadilah yang pertama!</div>';
+        return;
+    }
+    const acak = [...daftarSemuaFoto].sort(() => Math.random() - 0.5);
+    wadah.innerHTML = '';
+    acak.forEach(f => wadah.innerHTML += buatKartu(f));
+}
+
+// === UNGGAH FOTO ===
+const zonaUnggah = document.getElementById('zona-unggah');
+const inputFoto = document.getElementById('input-foto');
+const pratinjau = document.getElementById('pratinjau');
+const inputTag = document.getElementById('tag');
+const tombolKirim = document.getElementById('kirim');
+let dataFotoTerpilih = null;
+
+zonaUnggah.addEventListener('click', () => inputFoto.click());
+['dragover','dragenter'].forEach(e => zonaUnggah.addEventListener(e, e=>{e.preventDefault(); zonaUnggah.classList.add('aktif')}));
+['dragleave','drop'].forEach(e => zonaUnggah.addEventListener(e, e=>{e.preventDefault(); zonaUnggah.classList.remove('aktif')}));
+zonaUnggah.addEventListener('drop', e => {
+    const file = e.dataTransfer.files[0];
+    if(file?.type.startsWith('image/')) prosesFile(file);
+});
+inputFoto.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(file) prosesFile(file);
+});
+
+function prosesFile(file) {
+    const baca = new FileReader();
+    baca.onload = e => {
+        dataFotoTerpilih = e.target.result;
+        pratinjau.src = dataFotoTerpilih;
+        pratinjau.style.display = 'block';
+    };
+    baca.readAsDataURL(file);
+}
+
+tombolKirim.addEventListener('click', () => {
+    const tag = inputTag.value.trim();
+    if(!dataFotoTerpilih) return alert('⚠️ Silakan pilih foto terlebih dahulu!');
+    if(!tag) return alert('⚠️ Silakan isi tag kategori foto!');
+
+    const fotoBaru = {
+        url: dataFotoTerpilih,
+        tag: tag.split(',').map(t => t.trim().toLowerCase()).filter(t => t)
+    };
+    daftarSemuaFoto.push(fotoBaru);
+    simpanKePenyimpanan();
+
+    // Reset Form
+    dataFotoTerpilih = null;
+    pratinjau.style.display = 'none';
+    inputTag.value = '';
+    inputFoto.value = '';
+    alert('✅ Foto berhasil masuk ke galeri FireGamerX³!');
+    tampilkanAcak();
+});
+
+// === CARI FOTO ===
+const kataKunci = document.getElementById('kata-kunci');
+const tombolCari = document.getElementById('tombol-cari');
+const gridHasil = document.getElementById('grid-hasil');
+
+tombolCari.addEventListener('click', cariFoto);
+kataKunci.addEventListener('keydown', e => e.key === 'Enter' && cariFoto());
+
+function cariFoto() {
+    const cari = kataKunci.value.trim().toLowerCase();
+    if(!cari) return alert('⚠️ Masukkan kata kunci pencarian!');
+    
+    const hasil = daftarSemuaFoto.filter(f => f.tag.some(t => t.includes(cari)));
+    if(hasil.length === 0) {
+        gridHasil.innerHTML = `<div class="kosong">Tidak ditemukan foto dengan tag "${cari}"</div>`;
+        return;
+    }
+    gridHasil.innerHTML = '';
+    hasil.forEach(f => gridHasil.innerHTML += buatKartu(f));
+}
+
+// === BUAT KARTU FOTO ===
+function buatKartu(data) {
+    return `
+    <div class="kartu-foto">
+        <img src="${data.url}" alt="Foto FireGamerX³">
+        <div class="tag-foto">#${data.tag.join(' #')}</div>
+    </div>`;
+}
+
+// Tampilkan data awal
+tampilkanAcak();
+</script>
+</body>
+</html>
